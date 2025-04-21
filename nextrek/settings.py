@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hod$e+xyx@h1qs1n$t84zl8d4s(t9kgq8bc&zd^g!i*79lf03)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['nextreksite.onrender.com']
 
