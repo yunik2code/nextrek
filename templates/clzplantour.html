@@ -1,0 +1,151 @@
+{% extends 'clzhome.html' %}
+{% block title %} Plan{% endblock%}
+{% block content%} 
+<!-- Add this CSS to your existing <style> tag -->
+<!-- Add this CSS to your existing <style> tag -->
+    <style>
+        .plan-tour-section {
+            max-width: 800px;
+            margin: 50px auto;
+            margin-bottom: 200px;
+            padding: 40px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        .plan-tour-section h2 {
+            font-size: 2rem;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .plan-tour-section input, .plan-tour-section select {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .plan-tour-section button {
+            background-color: #0056b3;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+        .plan-tour-section button:hover {
+            background-color: #003d80;
+            transform: scale(1.05);
+        }
+        .tour-plan-result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        .tour-plan-result h3 {
+            font-size: 1.5rem;
+            color: #007bff;
+        }
+        .tour-plan-result ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+        .tour-plan-result ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        </style>
+        
+      
+
+        <section id="plan-tour" class="plan-tour-section">
+            <h2>Plan Your Lumbini Tour</h2>
+            <p>Customize your trip by entering your details below!</p>
+            <input type="number" id="budgetInput" placeholder="Enter your budget (in USD)" min="0">
+            <input type="number" id="daysInput" placeholder="Number of days" min="1">
+            <select id="travelPref" name="travelPref">
+                <option value="solo">Solo Travel</option>
+                <option value="group">Group Travel</option>
+                <option value="family">Family Travel</option>
+            </select>
+            <button onclick="generateTourPlan()">Generate Tour Plan</button>
+            <div class="tour-plan-result" id="tourPlanResult">
+                <h3>Your Curated Tour Plan</h3>
+                <ul id="tourPlanList"></ul>
+            </div>
+        </section>
+        
+        <!-- Add this JavaScript to your existing <script> tag -->
+        <script>
+        function generateTourPlan() {
+            const budget = parseFloat(document.getElementById('budgetInput').value);
+            const days = parseInt(document.getElementById('daysInput').value);
+            const travelPref = document.getElementById('travelPref').value;
+            const tourPlanList = document.getElementById('tourPlanList');
+            const tourPlanResult = document.getElementById('tourPlanResult');
+            tourPlanList.innerHTML = ''; // Clear previous plan
+        
+            if (!budget || budget <= 0 || !days || days <= 0) {
+                alert('Please enter a valid budget and number of days!');
+                return;
+            }
+        
+            // Simple logic for tour plan based on budget, days, and travel preference
+            let plan = [];
+            const dailyBudget = budget / days;
+        
+            // Core activities based on budget
+            if (dailyBudget >= 20) {
+                plan.push('Visit Maya Devi Temple (Entry: Free)');
+            }
+            if (dailyBudget >= 40) {
+                plan.push('Explore Ashokan Pillar (Entry: Free)');
+                plan.push(`Local Transport (${days} days, Approx: $${10 * days})`);
+            }
+            if (dailyBudget >= 80) {
+                plan.push(`Stay at Budget Hotel (${days} nights, Approx: $${30 * days})`);
+                plan.push('Visit Lumbini Monastic Zone (Entry: Free)');
+            }
+            if (dailyBudget >= 150) {
+                plan.push(`Guided Tour of Lumbini (${days} days, Approx: $${50 * days})`);
+                if (days >= 2) {
+                    plan.push(`Visit Kapilvastu Day Trip (Approx: $70)`);
+                }
+            }
+            if (dailyBudget >= 300) {
+                plan.push(`Luxury Hotel Stay (${days} nights, Approx: $${100 * days})`);
+                plan.push(`Full Lumbini Experience with Meals (${days} days, Approx: $${150 * days})`);
+            }
+        
+            // Adjust based on travel preference
+            if (travelPref === 'group') {
+                plan.push('Group discount on guided tours (Save 10%)');
+            } else if (travelPref === 'family') {
+                plan.push('Family-friendly activities at Lumbini Garden');
+            } else if (travelPref === 'solo') {
+                plan.push('Solo meditation session at Lumbini');
+            }
+        
+            // Fallback for low budget
+            if (plan.length === 0) {
+                plan.push(`With this budget, enjoy a ${days}-day visit to free sites like Maya Devi Temple.`);
+            }
+        
+            // Display the plan
+            plan.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                tourPlanList.appendChild(li);
+            });
+        
+            tourPlanResult.style.display = 'block';
+        }
+        </script>
+{% endblock%}

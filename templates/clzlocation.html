@@ -1,0 +1,432 @@
+{% extends 'clzhome.html' %}
+{% block title %} Location{% endblock%}
+{% block content%} 
+<!-- CSS -->
+
+<style>
+/* General Card Styling */
+.info-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 700px;
+  padding: 20px;
+  margin: 60px auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.info-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+/* Header: Icon + Title */
+.info-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+.info-card-header i {
+  font-size: 1.5rem;
+  color: #007bff;
+}
+.info-card-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Body Content */
+.info-card-body {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+/* Footer: Button */
+.info-card-footer {
+  text-align: right;
+}
+
+/* Scroll Animation Initial State */
+.scroll-animation {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* When element is visible */
+.scroll-animation.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Title CSS */
+.scroll-heading {
+    font-size: 48px;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-heading.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* Map CSS */
+.lumbini-map-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.map-heading {
+  text-align: center;
+  color: black;
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.map-and-info {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.map-wrapper {
+  flex: 1 1 500px;
+  min-width: 300px;
+}
+
+.info-text {
+  flex: 1 1 300px;
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+}
+
+/* Accomodation */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Title Animation */
+.animated-title {
+    font-weight: 600;
+    margin-bottom: 30px;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+/* Hotel Card Styling */
+.hotel-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+}
+
+.hotel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* 16:9 Image Aspect Ratio */
+.hotel-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+/* Hotel Info */
+.hotel-info {
+    padding: 15px;
+    text-align: center;
+}
+
+.visit-btn {
+    background-color: #007bff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    transition: background 0.3s ease-in-out;
+}
+
+.visit-btn:hover {
+    background-color: #007bff;
+ 
+}
+.book-btn{
+    color: #007bff;
+    background-color: white;
+    border: solid #007bff 1px;
+    border-radius: 20px;
+}
+.book-btn:hover {
+    background-color: white;
+    color: #007bff
+ 
+}
+/* Description Box */
+.description {
+    padding: 12px;
+    background: #f1f1f1;
+    font-size: 0.9rem;
+    border-top: 2px solid #ddd;
+    transition: max-height 0.4s ease-out;
+}
+
+/* Scroll Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+</style>
+{% load static %}
+<!-- HTML -->
+ <!-- Map  -->
+ <div class="lumbini-map-container">
+    <h2 class="map-heading">Geographical Data of Lumbini</h2>
+    <div class="map-and-info">
+      <div class="map-wrapper">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d179658.69811153178!2d83.04943550792827!3d27.505562350336654!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39966820f4d0f47d%3A0x874d45d2c2f57a5a!2sLumbini!5e0!3m2!1sen!2snp!4v1585034926019!5m2!1sen!2snp" 
+          width="100%" 
+          height="450" 
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy">
+        </iframe>
+      </div>
+      <div class="info-text">
+        <ul>
+            <li><strong>Coordinates:</strong> 27.5056° N, 83.0494° E</li>
+            <li><strong>Sacred Zone Area:</strong> Approximately 26 hectares</li>
+            <li><strong>Elevation:</strong> ~160 meters above sea level</li>
+            <li><strong>Annual Rainfall:</strong> Around 1500–2000 mm</li>
+            <li><strong>Location:</strong> Rupandehi District, Nepal, near the Indian border</li>
+          </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- How to get there -->
+<h3 id="scroll-heading" class="scroll-heading">
+   How to Reach There ?
+</h3>
+<!-- Air Travel Card -->
+<div class="info-card air-travel scroll-animation">
+    <div class="info-card-header">
+      <i class="bi bi-airplane-fill"></i>
+      <h4>Air Travel</h4>
+    </div>
+    <div class="info-card-body">
+      <p>
+        Experience a swift and comfortable flight to your destination with world‑class services and in‑flight amenities.
+      </p>
+    </div>
+    <div class="info-card-footer">
+      <a href="https://book-nac.crane.aero/ibe/search" class="btn btn-primary">Book Tickets</a>
+
+    </div>
+  </div>
+  
+  <!-- Bus Travel Card -->
+  <div class="info-card bus-travel scroll-animation">
+    <div class="info-card-header">
+      <i class="bi bi-bus-front"></i>
+      <h4>Bus Travel</h4>
+    </div>
+    <div class="info-card-body">
+      <p>
+        Enjoy a scenic and affordable bus ride with comfortable seating and convenient departures.
+      </p>
+    </div>
+    <div class="info-card-footer">
+      <a href="https://www.bussewa.com/" class="btn btn-primary">Book Tickets</a>
+
+    </div>
+  </div>
+  
+  
+
+<div class="container mt-5">
+    <h2 class="text-center animated-title">Explore Hotels in Lumbini</h2>
+
+    <div class="row">
+        <!-- Hotel Card 1 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="hotel-card">
+                <img src="{% static 'hotel1.jpeg' %}" alt="Hotel Image" class="hotel-img">
+                <div class="hotel-info">
+                    <h5>Lumbini Green Resort</h5>
+                    <p><strong>Rs. 3500</strong> per night</p>
+                    <!-- <button class="btn btn-primary visit-btn" data-bs-toggle="collapse" data-bs-target="#desc1">View Details</button> -->
+                    <a href="https://www.makemytrip.com/hotels/hotel-listing/?checkin=04222025&city=CTLUMBI&checkout=04232025&roomStayQualifier=2e0e&locusId=CTLUMBI&country=NPL&locusType=city&searchText=Lumbini&regionNearByExp=3&rsc=1e2e0e" target="_blank" class="btn btn-primary book-btn">Book Hotel</a>
+              
+                </div>
+                <div id="desc1" class="collapse description">
+                    <p>Located in the heart of Lumbini, Hotel Annapurna offers luxurious rooms with great views...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="hotel-card">
+                <img src="{% static 'hotel2.jpeg' %}" alt="Hotel Image" class="hotel-img">
+                <div class="hotel-info">
+                    <h5>Lumbini Peace Land</h5>
+                    <p><strong>Rs. 3000</strong> per night</p>
+                    <!-- <button class="btn btn-primary visit-btn" data-bs-toggle="collapse" data-bs-target="#desc1">View Details</button> -->
+                    <a href="https://www.makemytrip.com/hotels/hotel-listing/?checkin=04222025&city=CTLUMBI&checkout=04232025&roomStayQualifier=2e0e&locusId=CTLUMBI&country=NPL&locusType=city&searchText=Lumbini&regionNearByExp=3&rsc=1e2e0e" target="_blank" class="btn btn-primary book-btn">Book Hotel</a>
+
+              
+                </div>
+                <div id="desc1" class="collapse description">
+                    <p>Located in the heart of Lumbini, Hotel Annapurna offers luxurious rooms with great views...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="hotel-card">
+                <img src="{% static 'hotel3.jpeg' %}" alt="Hotel Image" class="hotel-img">
+                <div class="hotel-info">
+                    <h5>Dream International Hotel</h5>
+                    <p><strong>Rs. 2500</strong> per night</p>
+                    <!-- <button class="btn btn-primary visit-btn" data-bs-toggle="collapse" data-bs-target="#desc1">View Details</button> -->
+                    <a href="https://www.makemytrip.com/hotels/hotel-listing/?checkin=04222025&city=CTLUMBI&checkout=04232025&roomStayQualifier=2e0e&locusId=CTLUMBI&country=NPL&locusType=city&searchText=Lumbini&regionNearByExp=3&rsc=1e2e0e" target="_blank" class="btn btn-primary book-btn">Book Hotel</a>
+              
+                </div>
+                <div id="desc1" class="collapse description">
+                    <p>Located in the heart of Lumbini, Hotel Annapurna offers luxurious rooms with great views...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="hotel-card">
+                <img src="{% static 'hotel4.jpeg' %}" alt="Hotel Image" class="hotel-img">
+                <div class="hotel-info">
+                    <h5>Lumbini Buddha garden resort</h5>
+                    <p><strong>Rs. 4000</strong> per night</p>
+                    <!-- <button class="btn btn-primary visit-btn" data-bs-toggle="collapse" data-bs-target="#desc1">View Details</button> -->
+                    <a href="https://www.makemytrip.com/hotels/hotel-listing/?checkin=04222025&city=CTLUMBI&checkout=04232025&roomStayQualifier=2e0e&locusId=CTLUMBI&country=NPL&locusType=city&searchText=Lumbini&regionNearByExp=3&rsc=1e2e0e" target="_blank" class="btn btn-primary book-btn">Book Hotel</a>
+              
+                </div>
+                <div id="desc1" class="collapse description">
+                    <p>Located in the heart of Lumbini, Hotel Annapurna offers luxurious rooms with great views...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="hotel-card">
+                <img src="{% static 'hotel5.jpeg' %}" alt="Hotel Image" class="hotel-img">
+                <div class="hotel-info">
+                    <h5>Buddha Maya Garden</h5>
+                    <p><strong>Rs. 2000</strong> per night</p>
+                    <!-- <button class="btn btn-primary visit-btn" data-bs-toggle="collapse" data-bs-target="#desc1">View Details</button> -->
+                    <a href="https://www.makemytrip.com/hotels/hotel-listing/?checkin=04222025&city=CTLUMBI&checkout=04232025&roomStayQualifier=2e0e&locusId=CTLUMBI&country=NPL&locusType=city&searchText=Lumbini&regionNearByExp=3&rsc=1e2e0e" target="_blank" class="btn btn-primary book-btn">Book Hotel</a>
+              
+                </div>
+                <div id="desc1" class="collapse description">
+                    <p>Located in the heart of Lumbini, Hotel Annapurna offers luxurious rooms with great views...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="hotel-card">
+                <img src="{% static 'hotel6.jpeg' %}" alt="Hotel Image" class="hotel-img">
+                <div class="hotel-info">
+                    <h5>Galaxy Guest House</h5>
+                    <p><strong>Rs. 3500</strong> per night</p>
+                    <!-- <button class="btn btn-primary visit-btn" data-bs-toggle="collapse" data-bs-target="#desc1">View Details</button> -->
+                    <a href="https://www.makemytrip.com/hotels/hotel-listing/?checkin=04222025&city=CTLUMBI&checkout=04232025&roomStayQualifier=2e0e&locusId=CTLUMBI&country=NPL&locusType=city&searchText=Lumbini&regionNearByExp=3&rsc=1e2e0e" target="_blank" class="btn btn-primary book-btn">Book Hotel</a>
+              
+                </div>
+                <div id="desc1" class="collapse description">
+                    <p>Located in the heart of Lumbini, Hotel Annapurna offers luxurious rooms with great views...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Bundle (JS & Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<!-- JS -->
+ <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const elements = document.querySelectorAll('.scroll-animation');
+    const observerOptions = {
+      root: null, // viewport
+      rootMargin: '0px',
+      threshold: 0.2  // Trigger when 20% is visible
+    };
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        } else {
+          entry.target.classList.remove('visible');
+        }
+      });
+    }, observerOptions);
+  
+    elements.forEach(el => observer.observe(el));
+  });
+  document.addEventListener('scroll', animateHeading);
+window.onload = animateHeading;
+
+document.addEventListener("DOMContentLoaded", function () {
+    function handleScroll() {
+        let heading = document.getElementById("scroll-heading");
+        let position = heading.getBoundingClientRect().top;
+        let screenHeight = window.innerHeight;
+
+        if (position < screenHeight - 100) {
+            heading.classList.add("visible");
+        }else{
+            heading.classList.remove("visible")
+        }
+    }
+
+    document.addEventListener("scroll", handleScroll);
+    window.onload = handleScroll; // Run once on page load
+});
+</script>
+
+
+{% endblock%}
